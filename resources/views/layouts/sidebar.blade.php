@@ -21,71 +21,71 @@
             </li>
 
             @if (auth()->user()->level == 1)
-            <li class="header">MASTER</li>
-            <li>
-                <a href="{{ route('kategori.index')}}">
-                    <i class="fa fa-cubes"></i> <span>Kategori Laundry</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route('customer.index')}}">
-                    <i class="fa fa-id-card"></i> <span>Customer</span>
-                </a>
-            </li>
-            <li class="header">TRANSAKSI</li>
-            <!--<li>
+                <li class="header">MASTER</li>
+                <li>
+                    <a href="{{ route('kategori.index') }}">
+                        <i class="fa fa-cubes"></i> <span>Kategori Layanan Laundry</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('customer.index') }}">
+                        <i class="fa fa-id-card"></i> <span>Customer</span>
+                    </a>
+                </li>
+                <li class="header">TRANSAKSI</li>
+                <!--<li>
                 <a href="#">
                     <i class="fa fa-cube"></i> <span>Transaksi Aktif</span>
                 </a>
             </li>-->
-            <li>
-                <a href="{{route('transaksi.baru')}}">
-                    <i class="fa fa-money"></i> <span>Paket Baru</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('daftarpaket.index')}}">
-                    <i class="fa fa-cube"></i> <span>Daftar Paket Aktif</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('riwayat.index') }}">
-                    <i class="fa fa-file"></i> <span>Riwayat Transaksi</span>
-                </a>
-            </li>
-            <li class="header">REPORT</li>
-            <li>
-                <a href="{{ route('laporan.index') }}">
-                    <i class="fa fa-file-pdf-o"></i> <span>Laporan Pendapatan</span>
-                </a>
-            </li>
-            <li class="header">SYSTEM</li>
-            <li>
-                <a href="{{ route('user.index')}}">
-                    <i class="fa fa-users"></i> <span>Manajemen Users</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('setting.index')}}">
-                    <i class="fa fa-cube"></i> <span>Settings</span>
-                </a>
-            </li>
+                <li>
+                    <a href="{{ route('transaksi.baru') }}">
+                        <i class="fa fa-money"></i> <span>Transaksi Baru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftarpaket.index') }}">
+                        <i class="fa fa-cube"></i> <span>Daftar Transaksi Aktif</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('riwayat.index') }}">
+                        <i class="fa fa-file"></i> <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
+                <li class="header">REPORT</li>
+                <li>
+                    <a href="{{ route('laporan.index') }}">
+                        <i class="fa fa-file-pdf-o"></i> <span>Laporan Pendapatan</span>
+                    </a>
+                </li>
+                <li class="header">SYSTEM</li>
+                <li>
+                    <a href="{{ route('user.index') }}">
+                        <i class="fa fa-users"></i> <span>Manajemen Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('setting.index') }}">
+                        <i class="fa fa-cube"></i> <span>Settings</span>
+                    </a>
+                </li>
             @else
-            <li>
-                <a href="{{route('transaksi.baru')}}">
-                    <i class="fa fa-money"></i> <span>Paket Baru</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('daftarpaket.index')}}">
-                    <i class="fa fa-cube"></i> <span>Daftar Paket Aktif</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('riwayat.index') }}">
-                    <i class="fa fa-file"></i> <span>Riwayat Transaksi</span>
-                </a>
-            </li>
+                <li>
+                    <a href="{{ route('transaksi.baru') }}">
+                        <i class="fa fa-money"></i> <span>Paket Baru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftarpaket.index') }}">
+                        <i class="fa fa-cube"></i> <span>Daftar Paket Aktif</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('riwayat.index') }}">
+                        <i class="fa fa-file"></i> <span>Riwayat Transaksi</span>
+                    </a>
+                </li>
             @endif
         </ul>
     </section>
@@ -110,7 +110,7 @@
         </form> -->
 
 <!-- <li class="header">MAIN NAVIGATION</li> -->
-            <!-- <li class="active treeview">
+<!-- <li class="active treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     <span class="pull-right-container">
@@ -123,7 +123,7 @@
                 </ul>
             </li> -->
 
-            <!-- <li class="treeview">
+<!-- <li class="treeview">
                 <a href="#">
                     <i class="fa fa-files-o"></i>
                     <span>Layout Options</span>

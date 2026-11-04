@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Paket Baru
+    Transaksi Baru
 @endsection
 
 @section('breadcrumb')

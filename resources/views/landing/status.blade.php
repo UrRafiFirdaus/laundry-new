@@ -39,7 +39,7 @@
 
                             <table class="table table-bordered">
                                 <tr>
-                                    <th width="30%">Kode Laundry</th>
+                                    <th width="30%">Kode Transaksi</th>
                                     <td>{{ $paket->kode_paket }}</td>
                                 </tr>
 
@@ -156,7 +156,6 @@
                 var statusUrl = @json(route('pembayaran.status', $paket->kode_paket));
                 var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                // Tanya status ke server; muat ulang halaman jika sudah dibayar.
                 function cekStatus() {
                     return fetch(statusUrl, {
                             headers: {
@@ -177,7 +176,6 @@
                         });
                 }
 
-                // Setelah bayar, webhook bisa terlambat beberapa detik: cek berkala sampai lunas.
                 function mulaiPolling() {
                     var n = 0;
                     var t = setInterval(function() {

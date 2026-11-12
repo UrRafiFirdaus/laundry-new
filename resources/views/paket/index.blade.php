@@ -32,6 +32,7 @@
                                 <input type="checkbox" name="select_all" id="select_all">
                             </th>
                             <th width="5%">No</th>
+                            <th width="5%">Update Status</th>
                             <th>Kode Transaksi</th>
                             <th>Nama</th>
                             <th>Tipe Laundry</th>

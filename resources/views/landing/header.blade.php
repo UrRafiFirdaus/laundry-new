@@ -1,46 +1,27 @@
-<!-- HEADER -->
-    <header>
-        <!-- Header Start -->
-        <div class="header-area">
-            <div class="main-header header-sticky">
-                <!-- Logo -->
-                <div class="header-left">
-                    <div class="logo">
-                        <a href="{{('/')}}"><img src="{{ url(optional($setting)->path_logo ?? 'images/logo-default.png') }}"
-                                alt="" width="80"></a>
-                    </div>
-                    <div class="menu-wrapper  d-flex align-items-center">
-                        <!-- Main-menu -->
-                        <div class="main-menu d-none d-lg-block">
-                            <nav>
-                                <ul id="navigation">
-                                    <li class="active"><a href="{{('/')}}">Beranda</a></li>
-                                    <li><a href="{{route('landing.about')}}">Tentang Kami</a></li>
-                                    <li><a href="services.html">Layanan</a></li>
-                                    <!-- <li><a href="blog.html">Blog</a>
-                                        <ul class="submenu">
-                                            <li><a href="blog.html">Blog</a></li>
-                                            <li><a href="blog_details.html">Blog Details</a></li>
-                                            <li><a href="elements.html">Element</a></li>
-                                        </ul>
-                                    </li> -->
-                                    <li><a href="contact.html">Kontak</a></li>
-                                    <li><a href="{{ route('login')}}">Login</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-                <!--<div class="header-right d-none d-lg-block">
-                    <a href="#" class="header-btn1"><img src="{{ asset('/laundry-master/assets/img/icon/call.png')}}"
-                            alt=""> (08) 728 256 266</a>
-                    <a href="#" class="header-btn2">Make an Appointment</a>
-                </div>-->
-                <!-- Mobile Menu -->
-                <div class="col-12">
-                    <div class="mobile_menu d-block d-lg-none"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Header End -->
-    </header>
+@php $home = url('/'); @endphp
+<header class="lp-nav">
+    <div class="lp-container">
+        <a href="{{ $home }}" class="lp-brand">
+            @if (optional($setting)->path_logo)
+                <img src="{{ url($setting->path_logo) }}" alt="Logo">
+            @endif
+            <span>{{ optional($setting)->nama_perusahaan }}</span>
+        </a>
+
+        <button class="lp-burger" type="button" aria-label="Menu" aria-expanded="false"><i
+                class="fa-solid fa-bars"></i></button>
+
+        <ul class="lp-menu">
+            <li><a href="{{ $home }}"
+                    class="{{ request()->routeIs('landing.index') ? 'active' : '' }}">Beranda</a></li>
+            <li><a href="{{ $home }}#layanan">Layanan</a></li>
+            <li><a href="{{ route('landing.about') }}"
+                    class="{{ request()->routeIs('landing.about') ? 'active' : '' }}">Tentang Kami</a></li>
+            <li><a href="{{ route('landing.status') }}"
+                    class="{{ request()->routeIs('landing.status', 'status.cek') ? 'active' : '' }}">Cek Status</a></li>
+            <li><a href="{{ $home }}#kontak">Kontak</a></li>
+            <li class="login"><a href="{{ route('login') }}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            </li>
+        </ul>
+    </div>
+</header>

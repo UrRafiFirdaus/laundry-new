@@ -11,8 +11,7 @@ class CustomerController extends Controller
         return view('customer.index');
     }
     public function store(Request $request) {
-        $customer = Customer::latest()->first() ?? new Customer();
-        $request['kode_customer'] = 'CS'. tambah_nol_didepan((int)$customer->id_customer+1, 6);
+        $request['kode_customer'] = Customer::generateKode();
 
         $customer = Customer::create($request  -> all());
         return response()->json('Data customer baru telah disimpan!', 200);

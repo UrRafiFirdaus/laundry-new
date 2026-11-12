@@ -1,34 +1,53 @@
-@includeIf('landing.header')
-
 @extends('landing.master')
 
-<main>
-        <!--? About Area  -->
-    <section class="about-area2 pb-bottom mt-30">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-12">
-                    <!-- about-img -->
-                    <div class="about-img ">
-                        <img src="{{ asset('/laundry-master/assets/img/gallery/about1.png')}}" alt="">
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <div class="about-caption mb-50">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle mb-25">
-                            <h2>Tentang Kami</h2>
-                        </div>
-                        <p class="mb-20">
-                            Hamidah Laundry hadir sebagai solusi praktis untuk menjaga laundry Anda tetap bersih, harum, dan nyaman digunakan. Kami berkomitmen memberikan pelayanan terbaik dengan mengutamakan kebersihan dan kualitas hasil cucian
-                        </p>
-                        <p class="mb-30">Dengan pelayanan yang ramah dan proses pengerjaan yang teliti, kami membantu Anda menghemat waktu dan tenaga agar dapat lebih fokus pada aktivitas sehari-hari. Kepuasan Anda adalah prioritas kami.</p>
+@section('title', $landing['tentang_judul'] ?? 'Tentang Kami')
 
-                        <a href="about.html" class="btn">Lebih Lanjut</a>
-                    </div>
-                </div>
+@section('content')
+    @php
+        $misi = array_filter(array_map('trim', preg_split('/\R/', $landing['misi'] ?? '')));
+    @endphp
+    <main>
+        <section class="page-head">
+            <div class="bubbles"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="lp-container">
+                <h1>{{ $landing['tentang_judul'] }}</h1>
+                <p>{{ optional($setting)->nama_perusahaan }}</p>
             </div>
-        </div>
-    </section>
-    <!-- About Area End -->
-</main>
+        </section>
+
+        <section class="lp-section">
+            <div class="lp-container">
+                @include('landing.partials.about_section')
+
+                @if (!empty($landing['visi']) || $misi)
+                    <div class="vm-grid">
+                        @if (!empty($landing['visi']))
+                            <div class="vm-card reveal">
+                                <div class="badge-ico"><i class="fa-solid fa-eye"></i></div>
+                                <h3>Visi</h3>
+                                <p>{{ $landing['visi'] }}</p>
+                            </div>
+                        @endif
+                        @if ($misi)
+                            <div class="vm-card reveal" style="--d:.1s">
+                                <div class="badge-ico"><i class="fa-solid fa-bullseye"></i></div>
+                                <h3>Misi</h3>
+                                <ul>
+                                    @foreach ($misi as $m)
+                                        <li>{{ $m }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        <section style="padding-bottom: 96px;">
+            <div class="lp-container">
+                @include('landing.partials.cta')
+            </div>
+        </section>
+    </main>
+@endsection

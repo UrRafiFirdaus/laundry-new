@@ -41,7 +41,7 @@
                             <select name="level" id="level" class="form-control" required>
                                 <option value="">Pilih Level</option>
                                 <option value="1">Admin</option>
-                                <option value="2">User</option>
+                                <option value="2">Kasir</option>
                             </select>
                             <span class="help-block with-errors"></span>
                         </div>

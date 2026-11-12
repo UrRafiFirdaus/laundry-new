@@ -37,7 +37,7 @@
                 <a href="#">
                     <i class="fa fa-cube"></i> <span>Transaksi Aktif</span>
                 </a>
-            </li>-->
+                </li>-->
                 <li>
                     <a href="{{ route('transaksi.baru') }}">
                         <i class="fa fa-money"></i> <span>Transaksi Baru</span>
@@ -66,19 +66,31 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('landing_setting.index') }}">
+                        <i class="fa fa-paint-brush"></i> <span>Tampilan Website</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('setting.index') }}">
                         <i class="fa fa-cube"></i> <span>Settings</span>
                     </a>
                 </li>
             @else
+                <li class="header">MASTER</li>
+                <li>
+                    <a href="{{ route('customer.index') }}">
+                        <i class="fa fa-id-card"></i> <span>Customer</span>
+                    </a>
+                </li>
+                <li class="header">TRANSAKSI</li>
                 <li>
                     <a href="{{ route('transaksi.baru') }}">
-                        <i class="fa fa-money"></i> <span>Paket Baru</span>
+                        <i class="fa fa-money"></i> <span>Transaksi Baru</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('daftarpaket.index') }}">
-                        <i class="fa fa-cube"></i> <span>Daftar Paket Aktif</span>
+                        <i class="fa fa-cube"></i> <span>Daftar Transaksi Aktif</span>
                     </a>
                 </li>
                 <li>

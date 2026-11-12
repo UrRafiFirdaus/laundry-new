@@ -1,351 +1,146 @@
-@includeIf('landing.header')
-
 @extends('landing.master')
 
-
-
 @section('content')
+    @php
+        $heroFoto = $landing['hero_gambar'] ?? null;
+        $overlay = max(0, min(90, (int) ($landing['hero_overlay'] ?? 55))) / 100;
+        $langkah = [
+            ['fa-solid fa-hand-holding-heart', $landing['langkah1_judul'], $landing['langkah1_isi']],
+            ['fa-solid fa-soap', $landing['langkah2_judul'], $landing['langkah2_isi']],
+            ['fa-solid fa-bag-shopping', $landing['langkah3_judul'], $landing['langkah3_isi']],
+        ];
+        $stats = [
+            [$landing['stat1_angka'], $landing['stat1_label']],
+            [$landing['stat2_angka'], $landing['stat2_label']],
+            [$landing['stat3_angka'], $landing['stat3_label']],
+        ];
+    @endphp
     <main>
-        <!--? slider Area Start-->
-        <section class="slider-area hero-overly" style="background-image:url('{{ url($setting->path_logo) }}')">
-            <div class="slider-active">
-                <!-- Single Slider -->
-                <div class="single-slider slider-height d-flex align-items-center">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xl-7 col-lg-9 col-md-10 col-sm-9">
-                                <div class="hero__caption">
-                                    <h1 data-animation="fadeInLeft" data-delay="0.2s">Quality laundry service in your
-                                        city</h1>
-                                    <p data-animation="fadeInLeft" data-delay="0.4s">We take care about cleenness of
-                                        your cloth</p>
-                                    <a href="{{ route('landing.status') }}" class="genric-btn info circle"
-                                        data-animation="fadeInLeft" data-delay="0.7s">Cek Status Laundry</a>
-                                </div>
-                            </div>
-                        </div>
+        {{-- ============ HERO ============ --}}
+        <section class="lp-hero {{ $heroFoto ? '' : 'no-photo' }}"
+            style="@if ($heroFoto) background-image:url('{{ url($heroFoto) }}'); @endif --overlay: {{ $overlay }};">
+            <div class="bubbles"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="lp-container">
+                <div class="hero-inner">
+                    @if (!empty($landing['hero_badge']))
+                        <span class="hero-badge"><i class="fa-solid fa-star"></i> {{ $landing['hero_badge'] }}</span>
+                    @endif
+                    <h1>{{ $landing['hero_judul'] }}</h1>
+                    <p class="lead">{{ $landing['hero_subjudul'] }}</p>
+                    <div class="hero-actions">
+                        @if (!empty($landing['hero_tombol_teks']))
+                            <a href="{{ $landing['hero_tombol_link'] ?: route('landing.status') }}" class="btn-lp primary"><i
+                                    class="fa-solid fa-magnifying-glass"></i> {{ $landing['hero_tombol_teks'] }}</a>
+                        @endif
+                        @if (!empty($landing['hero_tombol2_teks']))
+                            <a href="{{ $landing['hero_tombol2_link'] ?: '#layanan' }}"
+                                class="btn-lp ghost">{{ $landing['hero_tombol2_teks'] }} <i
+                                    class="fa-solid fa-arrow-down"></i></a>
+                        @endif
                     </div>
+                </div>
+            </div>
+            <div class="hero-wave">
+                <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+                    <path fill="#ffffff" d="M0,48 C240,90 480,0 720,30 C960,60 1200,90 1440,40 L1440,80 L0,80 Z" />
+                </svg>
+            </div>
+        </section>
+
+        {{-- ============ STATISTIK ============ --}}
+        <section class="lp-stats">
+            <div class="lp-container">
+                <div class="stats-grid">
+                    @foreach ($stats as $i => $st)
+                        <div class="stat-card reveal" style="--d: {{ $i * 0.1 }}s">
+                            <div class="num" data-count="{{ $st[0] }}">{{ $st[0] }}</div>
+                            <div class="lbl">{{ $st[1] }}</div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>
-        <!-- slider Area End-->
-        <!--? Services Area Start -->
-        <section class="services-area pt-top border-bottom pb-20 mb-60">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7 col-lg-8">
-                        <div class="section-tittle text-center mb-55">
-                            <span class="element">Cepat, Mudah, Praktis, & Terpercaya</span>
-                            <h2>Bagaimana Proses Kami?</h2>
-                        </div>
-                    </div>
+
+        {{-- ============ PROSES ============ --}}
+        <section class="lp-section" id="proses">
+            <div class="lp-container">
+                <div class="sec-head reveal">
+                    <span class="sec-eyebrow">{{ $landing['proses_subjudul'] }}</span>
+                    <h2>{{ $landing['proses_judul'] }}</h2>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-icon">
-                                <img src="{{ asset('/laundry-master/assets/img/icon/services-icon1.svg') }}" alt="">
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="services.html">Kami Terima Laundry Anda</a></h5>
-                                <p>Bawa Laundry Anda ke Hamidah Laundry. Kami akan mencatat dengan teliti agar setiap
-                                    laundry mendapatkan penanganan yang tepat.</p>
-                            </div>
+                <div class="steps">
+                    @foreach ($langkah as $i => $lk)
+                        <div class="step reveal" style="--d: {{ $i * 0.12 }}s">
+                            <div class="ico"><i class="{{ $lk[0] }}"></i><span
+                                    class="no">{{ $i + 1 }}</span></div>
+                            <h3>{{ $lk[1] }}</h3>
+                            <p>{{ $lk[2] }}</p>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-icon">
-                                <img src="{{ asset('/laundry-master/assets/img/icon/services-icon2.svg') }}" alt="">
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="services.html">Kami Proses Laundry Anda</a></h5>
-                                <p>Laundry Anda diproses dengan cermat melalui tahapan pencucian dan perawatan sesuai
-                                    layanan yang dipilih untuk menjaga kebersihan dan kenyamanannya.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-icon">
-                                <img src="{{ asset('/laundry-master/assets/img/icon/services-icon3.svg') }}" alt="">
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="services.html">Laundry siap Diambil</a></h5>
-                                <p>Setelah proses selesai, laundry Anda siap diambil dalam kondisi bersih dan rapi sesuai
-                                    layanan yang dipesan. Cek status laundry Anda dengan mudah melalui website kami.</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>
-        <!-- Services End -->
-        <!--? Offer-services Start  -->
-        <section class="offer-services pb-bottom2">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7 col-lg-8">
-                        <div class="section-tittle text-center mb-55">
-                            <!-- <span class="element">Services</span> -->
-                            <h2>Layanan Kami</h2>
-                        </div>
-                    </div>
+
+        {{-- ============ LAYANAN ============ --}}
+        <section class="lp-section alt" id="layanan">
+            <div class="lp-container">
+                <div class="sec-head reveal">
+                    <span class="sec-eyebrow">Layanan</span>
+                    <h2>{{ $landing['layanan_judul'] }}</h2>
+                    <p>{{ $landing['layanan_subjudul'] }}</p>
                 </div>
-                <div class="row no-gutters">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-offers">
-                            <img src="{{ asset('/laundry-master/assets/img/gallery/offers1.png') }}" alt=""
-                                class=" w-100">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-offers">
-                            <img src="{{ asset('/laundry-master/assets/img/gallery/offers2.png') }}" alt=""
-                                class=" w-100">
-                            <div class="offers-caption text-center">
-                                <div class="cat-icon">
-                                    <img src="{{ asset('/laundry-master/assets/img/icon/offers-icon1.png') }}"
-                                        alt="">
+                @if ($layanan->count())
+                    <div class="svc-grid">
+                        @foreach ($layanan as $i => $l)
+                            <article class="svc-card reveal" style="--d: {{ ($i % 4) * 0.08 }}s">
+                                <div class="svc-img">
+                                    @if ($l->foto)
+                                        <img src="{{ url($l->foto) }}" alt="{{ $l->judul }}" loading="lazy">
+                                    @else
+                                        <div class="ph"><i class="fa-solid fa-shirt"></i></div>
+                                    @endif
+                                    @if ($l->harga_label)
+                                        <span class="svc-badge">{{ $l->harga_label }}</span>
+                                    @endif
                                 </div>
-                                <div class="cat-cap">
-                                    <h5><a href="services.html">Cuci Bersih</a></h5>
-                                    <p>Pakaian bersih, segar, dan harum setiap hari! Kami membantu membersihkan laundry Anda
-                                        dengan proses pencucian yang tepat agar kembali nyaman digunakan.</p>
+                                <div class="svc-body">
+                                    <h3>{{ $l->judul }}</h3>
+                                    <p>{{ $l->deskripsi }}</p>
+                                    <a href="{{ route('landing.status') }}" class="svc-link">Cek status cucian <i
+                                            class="fa-solid fa-arrow-right"></i></a>
                                 </div>
-                            </div>
-                        </div>
+                            </article>
+                        @endforeach
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-offers">
-                            <img src="{{ asset('/laundry-master/assets/img/gallery/offers2.png') }}" alt=""
-                                class=" w-100">
-                            <div class="offers-caption text-center">
-                                <div class="cat-icon">
-                                    <img src="{{ asset('/laundry-master/assets/img/icon/offers-icon1.png') }}"
-                                        alt="">
-                                </div>
-                                <div class="cat-cap">
-                                    <h5><a href="services.html">Cuci Bersih dan Setrika</a></h5>
-                                    <p>Solusi praktis untuk laundry bersih sekaligus rapi. Serahkan urusan mencuci dan
-                                        menyetrika kepada Hamidah Laundry, agar Anda punya lebih banyak waktu untuk hal-hal
-                                        penting lainnya.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-offers">
-                            <img src="{{ asset('/laundry-master/assets/img/gallery/offers4.png') }}" alt=""
-                                class=" w-100">
-                        </div>
-                    </div>
-                </div>
+                @else
+                    <p class="text-center" style="text-align:center;color:var(--muted)">Layanan akan segera tersedia.</p>
+                @endif
             </div>
         </section>
-        <!-- Offer-services End  -->
-        <!--? Want To work -->
-        <section class="container">
-            <section class="wantToWork-area"
-                data-background="{{ asset('/laundry-master/assets/img/gallery/section_bg01.png') }}">
-                <div class="wants-wrapper w-padding2">
-                    <div class="row align-items-center justify-content-between">
-                        <div class="col-xl-8 col-lg-9 col-md-7">
-                            <div class="wantToWork-caption wantToWork-caption2">
-                                <h2>Butuh Bantuan?</h2>
-                                <p>Kami siap melayani sepenuh hati.</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-md-5">
-                            <a href="#" class="btn wantToWork-btn"><img
-                                    src="{{ asset('/laundry-master/assets/img/icon/call2.png') }}" alt="">
-                                Hubungi</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
 
-
-        <!-- Want To work End
-        <!-- Testimonials_start -->
-        <!-- <section class="testimonials-area testimonials-overly  position-relative">
-            <div class="container">
-                <div class="border-bottom section-padding40 ">
-                    <div class="row">
-                        <div class="col-xl-12 ">
-                            <!-- testmonial-image -->
-        <!-- <div class="testmonial-nav text-center">
-                                <div class="testmonial-thumb">
-                                    <img src="{{ asset('/laundry-master/assets/img/gallery/testimonila1.png') }}" alt="">
-                                </div>
-                                <div class="testmonial-thumb">
-                                    <img src="{{ asset('/laundry-master/assets/img/gallery/testimonila2.png') }}" alt="">
-                                </div> -->
-        <!--<div class="testmonial-thumb">
-                                    <img src="{{ asset('/laundry-asset/assets/img/gallery/testimonila3.png') }}" alt="">
-                                </div>-->
-        <!-- <div class="testmonial-thumb">
-                                    <img src="{{ asset('/laundry-master/assets/img/gallery/testimonila2.png') }}" alt="">
-                                </div>
-                            </div>
-                            <div class="testmonial-item-active text-center"> -->
-        <!-- testimonial-single-items -->
-        <!-- <div class="testmonial-item ">
-                                    <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                        machine. The outcome is gleaming clothes!</p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <p> - Rupaya</p>
-                                </div> -->
-        <!-- testimonial-single-items -->
-        <!-- <div class="testmonial-item ">
-                                    <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                        machine. The outcome is gleaming clothes!</p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <p> - Rupaya</p>
-                                </div> -->
-        <!-- testimonial-single-items -->
-        <!-- <div class="testmonial-item ">
-                                    <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                        machine. The outcome is gleaming clothes!</p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <p> - Rupaya</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>  -->
-
-
-        <!-- Testimonials_end -->
-        <!--? Company achievement Start -->
-        <!--<section class="services-area section-padding40 fix">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7 col-lg-8">
-                        <div class="section-tittle text-center mb-55">
-                            <span class="element">Fun Fact</span>
-                            <h2>Company achievement</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-cap">
-                                <span>4000</span>
-                                <p>The automated process starts as soon as your clothes go into the machine.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-cap">
-                                <span>300+</span>
-                                <p>The automated process starts as soon as your clothes go into the machine.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-cat text-center">
-                            <div class="cat-cap">
-                                <span>95%</span>
-                                <p>The automated process starts as soon as your clothes go into the machine.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="bottom-bt">
-                                <img src="{{ asset('/laundry-master/assets/img/gallery/company-bg.png') }}" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-
-
-        <!-- Company achievement End -->
-        <!--? About Area  -->
-        <section class="about-area2 pb-bottom mt-30">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 col-md-12">
-                        <!-- about-img -->
-                        <div class="about-img ">
-                            <img src="{{ asset('/laundry-master/assets/img/gallery/about1.png') }}" alt="">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="about-caption mb-50">
-                            <!-- Section Tittle -->
-                            <div class="section-tittle mb-25">
-                                <h2>Tentang Kami</h2>
-                            </div>
-                            <p class="mb-20">
-                                Hamidah Laundry hadir sebagai solusi praktis untuk menjaga laundry Anda tetap bersih, harum,
-                                dan nyaman digunakan. Kami berkomitmen memberikan pelayanan terbaik dengan mengutamakan
-                                kebersihan dan kualitas hasil cucian
-                            </p>
-                            <p class="mb-30">Dengan pelayanan yang ramah dan proses pengerjaan yang teliti, kami membantu
-                                Anda menghemat waktu dan tenaga agar dapat lebih fokus pada aktivitas sehari-hari. Kepuasan
-                                Anda adalah prioritas kami.</p>
-
-                            <a href="about.html" class="btn">Lebih Lanjut</a>
-                        </div>
-                    </div>
-                </div>
+        {{-- ============ TENTANG ============ --}}
+        <section class="lp-section" id="tentang">
+            <div class="lp-container">
+                @include('landing.partials.about_section', ['showMore' => true])
             </div>
         </section>
-        <!-- About Area End -->
 
+        {{-- ============ CTA ============ --}}
+        <section style="padding-bottom: 96px;">
+            <div class="lp-container">
+                @include('landing.partials.cta')
+            </div>
+        </section>
 
-        <!--?  Map Area start  -->
-        <div class="Map-area">
-            <img src="{{ asset('/laundry-master/assets/img/gallery/Map.png') }}" alt="" class="w-100">
-        </div>
-        <!-- Map Area End -->
+        {{-- ============ KONTAK ============ --}}
+        <section class="lp-section alt" id="kontak" style="padding-bottom:0;">
+            <div class="lp-container" style="padding-bottom:96px;">
+                <div class="sec-head reveal">
+                    <span class="sec-eyebrow">Kontak</span>
+                    <h2>Temukan Kami</h2>
+                </div>
+                @include('landing.partials.contact')
+            </div>
+        </section>
     </main>
-
-
-    <!--<div class="slider-active">
-        
-                <div class="single-slider slider-height d-flex align-items-center">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xl-7 col-lg-9 col-md-10 col-sm-9">
-                                <div class="hero__caption">
-                                    <h1 data-animation="fadeInLeft" data-delay="0.2s">Quality laundry service in your
-                                        city</h1>
-                                    <p data-animation="fadeInLeft" data-delay="0.4s">We take care about cleenness of
-                                        your cloth</p>
-                                    <a href="{{ route('landing.status') }}" class="genric-btn info circle" data-animation="fadeInLeft"
-                                        data-delay="0.7s">Cek Status Laundry</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
 @endsection

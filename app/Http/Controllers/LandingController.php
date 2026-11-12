@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
-use App\Models\Paket;
+use App\Models\{
+    Setting,
+    LandingSetting,
+    LandingLayanan,
+    Paket,
+};
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
     public function index(){
         $setting = Setting::first();
-        return view('landing.content', compact('setting'));
+        $landing = LandingSetting::allKeyed();
+        $layanan = LandingLayanan::tampil()->get();
+        return view('landing.content', compact('setting', 'landing', 'layanan'));
     }
 
     public function status() {
         $setting = Setting::first();
-        return view('landing.status', compact('setting'));
+        $landing = LandingSetting::allKeyed();
+        return view('landing.status', compact('setting', 'landing'));
     }
 
     public function cekStatus(Request $request) {
@@ -31,14 +38,17 @@ class LandingController extends Controller
                 ->with('error', 'Kode paket tidak ditemukan');
         }
 
-        return view('landing.status', compact('paket', 'setting'));
+        $landing = LandingSetting::allKeyed();
+        return view('landing.status', compact('paket', 'setting', 'landing'));
     }
 
     public function about(){
         $setting = Setting::first();
-        return view('landing.about', compact('setting'));
+        $landing = LandingSetting::allKeyed();
+        return view('landing.about', compact('setting', 'landing'));
     }
 
+}
     /*public function cekStatus(Request $request)
     {
         $setting = Setting::first();
@@ -55,4 +65,4 @@ class LandingController extends Controller
 
         return view('landing.status', compact('paket', 'setting'));
     }*/
-}
+

@@ -1,143 +1,109 @@
-@includeIf('landing.header')
-
 @extends('landing.master')
 
+@section('title', 'Cek Status Laundry')
+
 @section('content')
-    <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+    <main>
+        <section class="page-head" style="padding-bottom: 120px;">
+            <div class="bubbles"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="lp-container">
+                <h1>Lacak Status Laundry</h1>
+                <p>Masukkan kode transaksi untuk melihat perkembangan cucian Anda.</p>
+            </div>
+        </section>
 
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Lacak Status Laundry</h4>
-                    </div>
+        <div class="lp-container">
+            <div class="status-wrap">
 
-                    <div class="card-body">
+                @if (session('error'))
+                    <div class="alert-lp"><i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}</div>
+                @endif
 
-                        <form action="{{ route('status.cek') }}" method="GET" class="form-origin">
-                            <div class="form-group">
-                                <input type="text" name="kode_paket" id="kode_paket" class="single-input"
-                                    placeholder="Masukkan Kode Transaksi" required value="{{ request('kode_paket') }}">
-                            </div>
-                            <div class="col-xs-4">
-                                <button type="submit" class="genric-btn info circle">
-                                    <i class="fa fa-search"></i> Lacak Status
-                                </button>
-                            </div>
-                        </form>
-
-                    </div>
+                <div class="panel">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> Cek Kode Transaksi</h3>
+                    <form action="{{ route('status.cek') }}" method="GET" class="track-form">
+                        <input type="text" name="kode_paket" id="kode_paket" placeholder="Masukkan Kode Transaksi"
+                            required value="{{ request('kode_paket') }}">
+                        <button type="submit" class="btn-lp primary"><i class="fa-solid fa-search"></i> Lacak
+                            Status</button>
+                    </form>
                 </div>
 
                 @if (isset($paket))
-                    <div class="card shadow mt-4">
-                        <div class="card-header bg-success text-white">
-                            <h4 class="mb-0">Hasil Pelacakan</h4>
-                        </div>
+                    <div class="panel">
+                        <h3><i class="fa-solid fa-receipt"></i> Hasil Pelacakan</h3>
 
-                        <div class="card-body">
+                        <table class="result-table">
+                            <tr>
+                                <th>Kode Transaksi</th>
+                                <td><strong>{{ $paket->kode_paket }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Nama Customer</th>
+                                <td>{{ optional($paket->customer)->nama_customer ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Berat Total</th>
+                                <td>{{ $paket->berat_total }} Kg</td>
+                            </tr>
+                            <tr>
+                                <th>Kategori Laundry</th>
+                                <td>{{ $paket->detail->map(fn($d) => optional($d->kategori)->nama_kategori)->filter()->unique()->implode(', ') ?: '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total Harga</th>
+                                <td>Rp. {{ format_uang($paket->total_harga) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Metode Pembayaran</th>
+                                <td>{{ \App\Services\MidtransService::label($paket->tipe_pembayaran) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status Pembayaran</th>
+                                <td>
+                                    @if ($paket->status_pembayaran == 'sudah dibayar')
+                                        <span class="pill success">Sudah Dibayar</span>
+                                    @else
+                                        <span class="pill warning">Belum Dibayar</span>
 
-                            <table class="table table-bordered">
-                                <tr>
-                                    <th width="30%">Kode Transaksi</th>
-                                    <td>{{ $paket->kode_paket }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Nama Customer</th>
-                                    <td>{{ optional($paket->customer)->nama_customer ?? '-' }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Berat Total</th>
-                                    <td>{{ $paket->berat_total }} Kg</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Kategori Laundry</th>
-                                    <td>
-                                        @foreach ($paket->detail as $item)
-                                            {{ $item->kategori->nama_kategori }}
-                                        @endforeach
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>Total Harga</th>
-                                    <td>Rp. {{ format_uang($paket->total_harga) }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Metode Pembayaran</th>
-                                    <td>{{ \App\Services\MidtransService::label($paket->tipe_pembayaran) }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Status Pembayaran</th>
-                                    <td>
-                                        @if ($paket->status_pembayaran == 'sudah dibayar')
-                                            <span class="badge badge-success">Sudah Dibayar</span>
-                                        @else
-                                            <span class="badge badge-warning">Belum Dibayar</span>
-
-                                            @if (\App\Services\MidtransService::perluMidtrans($paket->tipe_pembayaran))
-                                                <button type="button" id="btn-bayar"
-                                                    class="genric-btn primary circle small ml-2">
-                                                    <i class="fa fa-credit-card"></i> Bayar
+                                        @if (\App\Services\MidtransService::perluMidtrans($paket->tipe_pembayaran))
+                                            <div style="margin-top:10px;">
+                                                <button type="button" id="btn-bayar" class="btn-lp primary sm">
+                                                    <i class="fa-solid fa-credit-card"></i> Bayar
                                                 </button>
-                                            @else
-                                                <small class="text-muted d-block">Silakan bayar langsung di kasir.</small>
-                                            @endif
-                                        @endif
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>Status</th>
-                                    <td>
-                                        @if ($paket->status_paket == 'menunggu antrian')
-                                            <span class="badge badge-warning">
-                                                Menunggu Antrian
-                                            </span>
-                                        @elseif($paket->status_paket == 'diproses')
-                                            <span class="badge badge-info">
-                                                Diproses
-                                            </span>
-                                        @elseif($paket->status_paket == 'siap diambil')
-                                            <span class="badge badge-primary">
-                                                Siap Diambil
-                                            </span>
-                                        @elseif($paket->status_paket == 'sedang diantar')
-                                            <span class="badge badge-secondary">
-                                                Sedang Diantar
-                                            </span>
-                                        @elseif($paket->status_paket == 'diterima')
-                                            <span class="badge badge-success">
-                                                Diterima
-                                            </span>
+                                            </div>
                                         @else
-                                            <span class="badge badge-dark">
-                                                {{ $paket->status_paket }}
-                                            </span>
+                                            <small class="note-muted">Silakan bayar langsung di kasir.</small>
                                         @endif
-                                    </td>
-                                </tr>
-                            </table>
-
-                        </div>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    @if ($paket->status_paket == 'menunggu antrian')
+                                        <span class="pill warning">Menunggu Antrian</span>
+                                    @elseif($paket->status_paket == 'diproses')
+                                        <span class="pill info">Diproses</span>
+                                    @elseif($paket->status_paket == 'siap diambil')
+                                        <span class="pill primary">Siap Diambil</span>
+                                    @elseif($paket->status_paket == 'sedang diantar')
+                                        <span class="pill secondary">Sedang Diantar</span>
+                                    @elseif($paket->status_paket == 'diterima')
+                                        <span class="pill success">Diterima</span>
+                                    @else
+                                        <span class="pill dark">{{ $paket->status_paket }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 @endif
-
-                @if (session('error'))
-                    <div class="alert alert-danger mt-4">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
             </div>
         </div>
-    </div>
-
+        <div class="status-spacer"></div>
+    </main>
 @endsection
 
 @if (isset($paket) &&

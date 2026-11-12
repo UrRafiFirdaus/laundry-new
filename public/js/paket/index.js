@@ -14,6 +14,7 @@ $(function () {
         columns: [
             { data: "select_all", searchable: false, sortable: false },
             { data: "DT_RowIndex", searchable: false, sortable: false },
+            { data: "proses", searchable: false, sortable: false },
             { data: "kode_paket" },
             { data: "nama_customer" },
             { data: "nama_kategori" },

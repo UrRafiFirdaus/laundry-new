@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\{
     Paket,
     Kategori,
+    Customer,
     PaketDetail,
 };
 use App\Services\MidtransService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PDF;
 
@@ -35,6 +37,10 @@ class PaketController extends Controller
                 return '
                     <input type="checkbox" name="id_paket[]" value="'. $paket->id_paket .'">
                 ';
+            })
+            ->addColumn('proses', function($paket) {
+                $label = $this->nextStatusLabel($paket);
+                return '<button type="button" onclick="updateStatus(`'. route('paketbaru.proses', $paket->id_paket) .'`, `'. $label .'`)" class="btn btn-xs btn-primary" style="width:100px; border-radius:6px white-space:nowrap;">'. $label .'</button>';
             })
             ->addColumn('kode_paket', function($paket){
                 if (
@@ -93,11 +99,11 @@ class PaketController extends Controller
                     <button type"button" onclick="showDetail(`'. route('paketbaru.show', $paket-> id_paket) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                     <button type"button" onclick="deleteData(`'. route('paketbaru.destroy', $paket -> id_paket) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                     <button type"button" onclick="editForm(`'. route('paketbaru.edit', $paket-> id_paket) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
-                    <button type"button" onclick="updateStatus(`'. route('paketbaru.proses', $paket->id_paket) .'`, `'. $this->nextStatusLabel($paket) .'`)" class="btn btn-xs btn-primary btn-flat">'. $this -> nextStatusLabel($paket) .'</button>
+                    
                 </div>
                 ';
             })
-            ->rawColumns(['aksi', 'kode_paket', 'select_all', 'status_pembayaran'])
+            ->rawColumns(['aksi', 'proses', 'kode_paket', 'select_all', 'status_pembayaran'])
             ->make(true);
     }
 
@@ -190,44 +196,85 @@ class PaketController extends Controller
         $request->validate([
             'id_paket'        => 'required|integer',
             'tipe_pembayaran' => 'required|in:' . implode(',', array_keys(MidtransService::METODE)),
+            'id_customer'     => 'nullable|integer|exists:customer,id_customer',
+            'nama_customer'   => 'required_without:id_customer|nullable|string|max:255',
+            'telepon'         => 'nullable|string|max:255',
+            'alamat'          => 'nullable|string',
+        ], [
+            'nama_customer.required_without' => 'Pilih customer yang sudah ada atau isi nama customer baru.',
+            'id_customer.exists'             => 'Customer yang dipilih tidak ditemukan.',
         ]);
         $tipe = $request->tipe_pembayaran;
 
-        $tanggal = now() -> format('Ymd');
-        $paket = Paket::findOrFail($request->id_paket);
-        $lastPaket = Paket::whereDate('created_at', now()->toDateString())
-            ->whereNotNull('kode_paket')
-            ->orderBy('kode_paket', 'desc')
-            ->first();
+        $paket = DB::transaction(function () use ($request, $tipe) {
+            $tanggal = now() -> format('Ymd');
+            $paket = Paket::findOrFail($request->id_paket);
+            $lastPaket = Paket::whereDate('created_at', now()->toDateString())
+                ->whereNotNull('kode_paket')
+                ->orderBy('kode_paket', 'desc')
+                ->first();
 
-        if ($lastPaket) {
-            $lastNumber = (int) substr($lastPaket->kode_paket, -2);
-            $newNumber = $lastNumber +1;
-        } else {
-            $newNumber = 1;
+            if ($lastPaket) {
+                $lastNumber = (int) substr($lastPaket->kode_paket, -2);
+                $newNumber = $lastNumber +1;
+            } else {
+                $newNumber = 1;
+            }
+
+            $kode = 'P' . $tanggal . str_pad($newNumber, 2, '0', STR_PAD_LEFT);
+            $paket -> kode_paket         = $kode;
+            $paket -> id_customer        = $this->resolveCustomer($request);
+            $paket -> berat_total        = $request -> berat_total;
+            $paket -> total_harga        = (int) round($request -> total_harga);
+            $paket -> tipe_pembayaran    = $tipe;
+            $paket -> status_pembayaran  = $tipe === 'tunai' ? 'sudah dibayar' : 'belum dibayar';
+            $paket -> tipe_pengambilan   = $request -> tipe_pengambilan;
+            $paket -> status_paket       = $request -> status_paket;
+            $paket -> telepon            = $request -> telepon;
+            $paket -> alamat             = $request -> alamat;
+            $paket -> update();
+
+            return $paket;
+        });
+
+        return redirect() -> route('transaksi.selesai')
+            -> with('id_paket_selesai', $paket->id_paket);
+    }
+
+    /**
+     * Tentukan customer untuk transaksi ini.
+     * - Customer lama (dipilih dari daftar)  -> pakai id_customer yang dikirim.
+     * - Customer baru (diketik manual)       -> disimpan ke tabel customer.
+     *   Jika nama + telepon persis sama dengan customer yang sudah ada,
+     *   customer itu dipakai kembali supaya tidak terjadi data ganda.
+     */
+    private function resolveCustomer(Request $request): int {
+        if ($request->filled('id_customer')) {
+            return (int) $request->id_customer;
         }
 
-       $kode = 'P' . $tanggal . str_pad($newNumber, 2, '0', STR_PAD_LEFT);
-       $paket -> kode_paket         = $kode;
-       $paket -> id_customer        = $request -> id_customer;
-       $paket -> berat_total        = $request -> berat_total;
-       $paket -> total_harga        = (int) round($request -> total_harga);
-       $paket -> tipe_pembayaran    = $tipe;
-       $paket -> status_pembayaran  = $tipe === 'tunai' ? 'sudah dibayar' : 'belum dibayar';
-       $paket -> tipe_pengambilan   = $request -> tipe_pengambilan;
-       $paket -> status_paket       = $request -> status_paket;
-       $paket -> telepon            = $request -> telepon;
-       $paket -> alamat             = $request -> alamat;
-       $paket -> update();
+        $nama    = trim($request->nama_customer);
+        $telepon = trim((string) $request->telepon) ?: null;
+        $alamat  = trim((string) $request->alamat) ?: null;
 
-       $detail = PaketDetail::where('id_paket', $paket -> id_paket)-> get();
-       foreach ($detail as $item) {
-        $kategori = Kategori::find($item -> id_kategori);
-        $kategori -> update();
-       }
+        if ($telepon) {
+            $ada = Customer::whereRaw('LOWER(nama_customer) = ?', [mb_strtolower($nama)])
+                ->where('telepon', $telepon)
+                ->first();
 
-       return redirect() -> route('transaksi.selesai')
-           -> with('id_paket_selesai', $paket->id_paket);
+            if ($ada) {
+                return $ada->id_customer;
+            }
+        }
+
+        $customer = Customer::create([
+            'kode_customer' => Customer::generateKode(),
+            'nama_customer' => $nama,
+            'telepon'       => $telepon,
+            'alamat'        => $alamat,
+        ]);
+
+        return $customer->id_customer;
     }
 
     public function complete() {

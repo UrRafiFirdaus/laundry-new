@@ -1,82 +1,66 @@
-<footer>
-        <!-- Footer Start-->
-        <div class="footer-area footer-padding">
-            <div class="container">
-                <div class="row d-flex justify-content-between">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-footer-caption mb-50">
-                            <div class="single-footer-caption mb-30">
-                                <!-- logo -->
-                                <div class="footer-logo mb-35">
-                                    <a href="index.html"><img
-                                            src="{{ url(optional($setting)->path_logo ?? 'images/logo-default.png') }}"
-                                            alt="" width="80"></a>
-                                </div>
-                                <div class="footer-tittle">
-                                    <!--<div class="footer-pera">
-                                        <p>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis
-                                            viverra ornare, eros dolor interdum nulla.</p>
-                                    </div> -->
-                                </div>
-                                <!-- social -->
-                                <div class="footer-social">
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-footer-caption mb-50">
-                            <div class="footer-tittle">
-                                <h4>Services </h4>
-                                <ul>
-                                    <li><a href="#">- Dry Cleaning</a></li>
-                                    <li><a href="#">- Dry Clean</a></li>
-                                    <li><a href="#">- Ironing Services</a></li>
-                                    <li><a href="#">- Laundry Service London</a></li>
-                                    <li><a href="#">- Laundry App</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>-->
-                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-footer-caption mb-50">
-                            <div class="footer-tittle">
-                                <h4>Hubungi Kami</h4>
-                                <ul>
-                                    <li class="number"><a>{{$setting->telepon}}</a></li>
-                                    <li><a>{{$setting->email}}</a></li>
-                                    <li><a>{{$setting->alamat}}</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+@php
+    $nama = optional($setting)->nama_perusahaan;
+    $sosial = [
+        'instagram' => 'fa-instagram',
+        'facebook' => 'fa-facebook-f',
+        'tiktok' => 'fa-tiktok',
+    ];
+    $waLinkFooter = \App\Models\LandingSetting::waLink(optional($setting)->telepon);
+@endphp
+<footer class="lp-footer">
+    <div class="lp-container">
+        <div class="foot-grid">
+            <div>
+                <a href="{{ url('/') }}" class="lp-brand">
+                    @if (optional($setting)->path_logo)
+                        <img src="{{ url($setting->path_logo) }}" alt="Logo">
+                    @endif
+                    <span>{{ $nama }}</span>
+                </a>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($landing['hero_subjudul'] ?? ''), 160) }}</p>
+                <div class="foot-social">
+                    @foreach ($sosial as $key => $icon)
+                        @if (!empty($landing[$key]))
+                            <a href="{{ $landing[$key] }}" target="_blank" rel="noopener"
+                                aria-label="{{ ucfirst($key) }}"><i class="fab {{ $icon }}"></i></a>
+                        @endif
+                    @endforeach
+                    @if ($waLinkFooter)
+                        <a href="{{ $waLinkFooter }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i
+                                class="fab fa-whatsapp"></i></a>
+                    @endif
                 </div>
             </div>
-        </div>
-        <!-- footer-bottom area -->
-        <div class="footer-bottom-area section-bg2"
-            data-background="{{ asset('/laundry-master/assets/img/gallery/footer-bg.png')}}">
-            <div class="container">
-                <div class="footer-border">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-xl-12 ">
-                            <div class="footer-copy-right text-center">
-                                <p>
-                                    <strong>
-                                        Copyright &copy; {{ date('Y') }} <a href="/">{{ $setting->nama_perusahaan }}
-                                    </strong>
-                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                     All rights reserved
-                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <h4>Menu</h4>
+                <ul>
+                    <li><a href="{{ url('/') }}">Beranda</a></li>
+                    <li><a href="{{ url('/') }}#layanan">Layanan</a></li>
+                    <li><a href="{{ route('landing.about') }}">Tentang Kami</a></li>
+                    <li><a href="{{ route('landing.status') }}">Cek Status Laundry</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Hubungi Kami</h4>
+                <ul>
+                    @if (optional($setting)->telepon)
+                        <li><i class="fa-solid fa-phone"></i> {{ $setting->telepon }}</li>
+                    @endif
+                    @if (optional($setting)->email)
+                        <li><i class="fa-solid fa-envelope"></i> {{ $setting->email }}</li>
+                    @endif
+                    @if (optional($setting)->alamat)
+                        <li><i class="fa-solid fa-location-dot"></i> {{ $setting->alamat }}</li>
+                    @endif
+                    @if (!empty($landing['jam_operasional']))
+                        <li><i class="fa-solid fa-clock"></i> {{ $landing['jam_operasional'] }}</li>
+                    @endif
+                </ul>
             </div>
         </div>
-        <!-- Footer End-->
-    </footer>
+    </div>
+    <div class="foot-bottom">
+        <div class="lp-container">Copyright &copy; {{ date('Y') }} <strong>{{ $nama }}</strong>. All
+            rights reserved.</div>
+    </div>
+</footer>

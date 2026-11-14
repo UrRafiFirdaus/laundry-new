@@ -1,4 +1,5 @@
 let table;
+let isSubmitting = false;
 
 $(function () {
     table = $(".table").DataTable({
@@ -19,22 +20,51 @@ $(function () {
         ],
     });
 
-    $("#modal-form")
+    $("#modal-form form")
         .validator()
         .on("submit", function (e) {
-            if (!e.preventDefault()) {
-                $.post(
-                    $("#modal-form form").attr("action"),
-                    $("#modal-form form").serialize(),
-                )
+            if (!e.isDefaultPrevented()) {
+                e.preventDefault();
+
+                if (isSubmitting) {
+                    return false;
+                }
+
+                isSubmitting = true;
+                const $form = $(this);
+                const $submitBtn = $form.find('button[type="submit"]');
+                const originalBtnHtml = $submitBtn.html();
+
+                $submitBtn
+                    .prop("disabled", true)
+                    .html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+
+                $.post($form.attr("action"), $form.serialize())
                     .done((response) => {
                         $("#modal-form").modal("hide");
                         table.ajax.reload();
                     })
                     .fail((errors) => {
-                        alert("Tidak dapat menyimpan data");
-                        return;
+                        alert("Tidak dapat meyimpan data");
+                    })
+                    .always(() => {
+                        isSubmitting = false;
+                        $submitBtn
+                            .prop("disabled", false)
+                            .html(originalBtnHtml);
                     });
+                // $.post(
+                //     $("#modal-form form").attr("action"),
+                //     $("#modal-form form").serialize(),
+                // )
+                //     .done((response) => {
+                //         $("#modal-form").modal("hide");
+                //         table.ajax.reload();
+                //     })
+                //     .fail((errors) => {
+                //         alert("Tidak dapat menyimpan data");
+                //         return;
+                //     });
             }
         });
 });
@@ -46,10 +76,16 @@ function addForm(url) {
     $("#modal-form form")[0].reset();
     $("#modal-form form").attr("action", url);
     $("#modal-form [name=_method]").val("post");
-    $("#modal-form [name=kode_customer]").focus();
-    $("#modal-form [name=nama_customer]").focus();
-    $("#modal-form [name=telepon]").focus();
-    $("#modal-form [name=alamat]").focus();
+    // $("#modal-form [name=kode_customer]").focus();
+    // $("#modal-form [name=nama_customer]").focus();
+    // $("#modal-form [name=telepon]").focus();
+    // $("#modal-form [name=alamat]").focus();
+    // $("#modal-form [name=alamat]").focus();
+    $("#modal-form form").find('button[type="submit"]').prop("disabled", false);
+
+    setTimeout(() => {
+        $("#modal-form [name=nama_customer").focus();
+    }, 300);
 }
 
 function editForm(url) {
@@ -59,10 +95,11 @@ function editForm(url) {
     $("#modal-form form")[0].reset();
     $("#modal-form form").attr("action", url);
     $("#modal-form [name=_method]").val("put");
-    $("#modal-form [name=kode_customer]").focus();
-    $("#modal-form [name=nama_customer]").focus();
-    $("#modal-form [name=telepon]").focus();
-    $("#modal-form [name=alamat]").focus();
+    // $("#modal-form [name=kode_customer]").focus();
+    // $("#modal-form [name=nama_customer]").focus();
+    // $("#modal-form [name=telepon]").focus();
+    // $("#modal-form [name=alamat]").focus();
+    $("#modal-form form").find('button[type="submit"]').prop("disabled", false);
 
     $.get(url)
         .done((response) => {

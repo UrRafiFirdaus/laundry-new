@@ -12,7 +12,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group row">
-                        <label for="nama_kategori" class="col-lg-2 col-lg-offset-1 control-label">Kategori Laundry</label>
+                        <label for="nama_kategori" class="col-lg-2 col-lg-offset-1 control-label">Kategori
+                            Laundry</label>
                         <div class="col-lg-6">
                             <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" required
                                 autofocus>
@@ -23,7 +24,8 @@
                         <label for="berat_minimal" class="col-lg-2 col-lg-offset-1 control-label">Berat Minimal</label>
                         <div class="col-lg-6">
                             <div class="input-group">
-                                <input type="text" name="berat_minimal" id="berat_minimal" class="form-control" required>
+                                <input type="text" name="berat_minimal" id="berat_minimal" class="form-control"
+                                    required>
                                 <span class="input-group-addon">Kg</span>
                             </div>
                             <span class="help-block with-errors"></span>
@@ -38,7 +40,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-flat btn-primary"><i class="fa fa-save"></i> Simpan</button>
+                    <button type="submit" id="btn-simpan" class="btn btn-sm btn-flat btn-primary"><i
+                            class="fa fa-save"></i>
+                        Simpan</button>
                     <button type="button" class="btn btn-sm btn-flat btn-warning" data-dismiss="modal"><i
                             class="fa fa-arrow-circle-left"></i> Batal</button>
                 </div>

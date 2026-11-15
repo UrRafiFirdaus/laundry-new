@@ -336,6 +336,14 @@ $(function () {
     updateRingkasan();
     hitungTotal();
 
+    // Halaman dimuat ulang karena error validasi: pulihkan kategori terpilih
+    const kategoriLama = $("#id_kategori").val();
+    if (kategoriLama) {
+        $("#modal-kategori [onclick^=\"pilihKategori('" + kategoriLama + "'\"]")
+            .first()
+            .trigger("click");
+    }
+
     // --- Validasi sebelum simpan
     $("#form-paket").on("submit", function (e) {
         hitungTotal();
@@ -391,14 +399,8 @@ function pilihKategori(id, nama, berat, harga) {
     );
     $("#btn-kategori").addClass("terpilih");
 
-    // SIMPAN KE paket_detail
-    $.post(window.transaksiStoreUrl, {
-        _token: $('meta[name="csrf-token"]').attr("content"),
-        id_paket: $("#id_paket").val(),
-        id_kategori: id,
-    }).fail(function () {
-        alert("Gagal simpan detail");
-    });
+    // Kategori TIDAK disimpan di sini. Nilai hanya ditaruh di input hidden
+    // #id_kategori dan disimpan sekali saat form disubmit (hanya 1 kategori per transaksi).
 
     updateRingkasan();
     hitungTotal();

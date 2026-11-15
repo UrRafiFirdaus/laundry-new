@@ -195,6 +195,7 @@ class PaketController extends Controller
     public function store(Request $request) {
         $request->validate([
             'id_paket'        => 'required|integer',
+            'id_kategori'     => 'required|integer|exists:kategori,id_kategori',
             'tipe_pembayaran' => 'required|in:' . implode(',', array_keys(MidtransService::METODE)),
             'id_customer'     => 'nullable|integer|exists:customer,id_customer',
             'nama_customer'   => 'required_without:id_customer|nullable|string|max:255',
@@ -203,6 +204,8 @@ class PaketController extends Controller
         ], [
             'nama_customer.required_without' => 'Pilih customer yang sudah ada atau isi nama customer baru.',
             'id_customer.exists'             => 'Customer yang dipilih tidak ditemukan.',
+            'id_kategori.required'           => 'Pilih tipe laundry terlebih dahulu.',
+            'id_kategori.exists'             => 'Tipe laundry yang dipilih tidak ditemukan.',
         ]);
         $tipe = $request->tipe_pembayaran;
 
@@ -233,6 +236,16 @@ class PaketController extends Controller
             $paket -> telepon            = $request -> telepon;
             $paket -> alamat             = $request -> alamat;
             $paket -> update();
+
+            $kategori = Kategori::findOrFail($request->id_kategori);
+            PaketDetail::where('id_paket', $paket->id_paket)->delete();
+            PaketDetail::create([
+                'id_paket'      => $paket->id_paket,
+                'id_kategori'   => $kategori->id_kategori,
+                'harga'         => $kategori->harga,
+                'berat_minimal' => $kategori->berat_minimal,
+                'id_user'       => auth()->id(),
+            ]);
 
             return $paket;
         });

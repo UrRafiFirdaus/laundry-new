@@ -666,7 +666,7 @@
         <input type="hidden" name="id_customer" id="id_customer">
         <input type="hidden" name="total_harga" id="total_harga_hidden">
         <input type="hidden" name="status_paket" id="status_paket" value="menunggu antrian">
-        <input type="hidden" name="id_kategori" id="id_kategori">
+        <input type="hidden" name="id_kategori" id="id_kategori" value="{{ old('id_kategori') }}">
         <input type="hidden" id="harga">
         {{-- Diisi otomatis berdasarkan tipe pembayaran. Server tetap menentukan nilai akhirnya. --}}
         <input type="hidden" name="status_pembayaran" id="status_pembayaran" value="sudah dibayar">

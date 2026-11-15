@@ -95,13 +95,16 @@ class PaketDetailController extends Controller
         if (! $kategori) {
             return response()->json('Data gagal disimpan', 400);
         }
-        $detail = new PaketDetail();
-        $detail->   id_paket        = $request        ->id_paket;
-        $detail->   id_kategori     = $kategori       ->id_kategori;
-        $detail->   harga           = $kategori       ->harga;
-        $detail->   berat_minimal   = $kategori       ->berat_minimal;
-        $detail ->  id_user         = auth()->id();
-        $detail->save();
+
+        PaketDetail::updateOrCreate(
+            ['id_paket' => $request->id_paket],
+            [
+                'id_kategori'   => $kategori->id_kategori,
+                'harga'         => $kategori->harga,
+                'berat_minimal' => $kategori->berat_minimal,
+                'id_user'       => auth()->id(),
+            ]
+        );
 
         return response()->json('Data berhasil disimpan', 200);
 

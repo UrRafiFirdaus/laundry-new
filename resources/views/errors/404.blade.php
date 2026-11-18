@@ -1,16 +1,6 @@
-@includeIf('landing.header')
+@extends('errors.layout')
 
-@extends('landing.master')
-
-
-@section('content')
-<div class="container text-center py-5">
-    
-    <h3>Halaman Tidak Ditemukan</h3>
-    <p>Maaf, halaman yang Anda cari tidak tersedia.</p>
-
-    <a href="{{ url('/') }}" class="btn btn-primary">
-        Kembali ke Beranda
-    </a>
-</div>
-@endsection
+@section('code', '404')
+@section('icon', 'fa-magnifying-glass')
+@section('title', 'Halaman Tidak Ditemukan')
+@section('message', 'Halaman yang Anda cari tidak tersedia, sudah dipindahkan, atau alamatnya salah ketik.')

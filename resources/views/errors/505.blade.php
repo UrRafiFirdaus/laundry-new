@@ -1,14 +1,6 @@
-@includeIf('landing.header')
+@extends('errors.layout')
 
-@extends('landing.master')
-
-@section('content')
-<div class = "container text-center py-5">
-    <h3>Halaman Tidak Ditemukan</h3>
-    <p>Maaf, Halaman yang Anda cari tidak tersedia.</p>
-
-    <a href="{{url('/')}}" class="btn btn-primary">
-        Kembali ke Beranda
-    </a>
-</div>
-@endsection
+@section('code', '505')
+@section('icon', 'fa-code-branch')
+@section('title', 'Versi HTTP Tidak Didukung')
+@section('message', 'Versi protokol HTTP yang digunakan tidak didukung oleh server.')

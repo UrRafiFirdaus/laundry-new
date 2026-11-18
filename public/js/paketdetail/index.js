@@ -23,7 +23,6 @@ function escapeHtml(t) {
     return $("<div>").text(t).html();
 }
 
-/* ---------- Total bayar ---------- */
 function animasiTotal(target) {
     if (animFrame) cancelAnimationFrame(animFrame);
 
